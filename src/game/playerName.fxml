@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane id="root" prefHeight="61.0" prefWidth="277.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="game.PlayerNameController">
+    <bottom>
+        <HBox alignment="CENTER" prefHeight="52.0" prefWidth="277.0" BorderPane.alignment="CENTER">
+            <children>
+                <Button fx:id="submit" mnemonicParsing="false" onAction="#submit" prefHeight="22.0" prefWidth="36.0" text="OK" textAlignment="CENTER">
+                    <padding>
+                        <Insets left="5.0" top="5.0" />
+                    </padding>
+                </Button>
+            </children>
+        </HBox>
+    </bottom>
+   <left>
+      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label fx:id="xName" prefHeight="28.0" prefWidth="86.0" text="Player X Name :">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </Label>
+            <Label fx:id="oName" prefHeight="24.0" prefWidth="86.0" text="Player O Name :" />
+         </children>
+      </VBox>
+   </left>
+   <center>
+      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+         <children>
+            <TextField fx:id="playerX" />
+            <TextField fx:id="playerO" />
+         </children>
+      </VBox>
+   </center>
+   <top>
+      <HBox alignment="CENTER" prefHeight="39.0" prefWidth="277.0" BorderPane.alignment="CENTER">
+         <children>
+            <RadioButton fx:id="single" contentDisplay="CENTER" mnemonicParsing="false" onAction="#multiPlayer" text="Single player">
+               <toggleGroup>
+                  <ToggleGroup fx:id="player" />
+               </toggleGroup></RadioButton>
+            <RadioButton fx:id="two" contentDisplay="CENTER" mnemonicParsing="false" onAction="#multiPlayer" text="Two players" toggleGroup="$player" translateX="20.0" />
+         </children>
+      </HBox>
+   </top>
+</BorderPane>
