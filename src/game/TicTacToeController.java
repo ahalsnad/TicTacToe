@@ -1,16 +1,19 @@
 package game;
 
+import javafx.animation.PauseTransition;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
@@ -19,23 +22,23 @@ import java.util.ResourceBundle;
 public class TicTacToeController implements Initializable {
 
     @FXML
-    TextField id00;
+    Label id00;
     @FXML
-    TextField id01;
+    Label id01;
     @FXML
-    TextField id02;
+    Label id02;
     @FXML
-    TextField id10;
+    Label id10;
     @FXML
-    TextField id11;
+    Label id11;
     @FXML
-    TextField id12;
+    Label id12;
     @FXML
-    TextField id20;
+    Label id20;
     @FXML
-    TextField id21;
+    Label id21;
     @FXML
-    TextField id22;
+    Label id22;
     @FXML
     Label label;
 
@@ -63,103 +66,35 @@ public class TicTacToeController implements Initializable {
         label.setText(whoseTurn + "'s turn to play");
     }
 
-    /* Mouse click events */
-
-    public void printTurn00(MouseEvent event) {
-        if (winner == null) {
-            printTurn(id00, 0, 0);
-        } else {
-            showWindow(winner);
-        }
-    }
-
-    public void printTurn01(MouseEvent event) {
-        if (winner == null) {
-            printTurn(id01, 0, 1);
-        } else {
-            showWindow(winner);
-        }
-    }
-
-    public void printTurn02(MouseEvent event) {
-        if (winner == null) {
-            printTurn(id02, 0, 2);
-        } else {
-            showWindow(winner);
-        }
-    }
-
-    public void printTurn10(MouseEvent event) {
-        if (winner == null) {
-            printTurn(id10, 1, 0);
-        } else {
-            showWindow(winner);
-        }
-    }
-
-    public void printTurn11(MouseEvent event) {
-        if (winner == null) {
-            printTurn(id11, 1, 1);
-        } else {
-            showWindow(winner);
-        }
-    }
-
-    public void printTurn12(MouseEvent event) {
-        if (winner == null) {
-            printTurn(id12, 1, 2);
-        } else {
-            showWindow(winner);
-        }
-    }
-
-    public void printTurn20(MouseEvent event) {
-        if (winner == null) {
-            printTurn(id20, 2, 0);
-        } else {
-            showWindow(winner);
-        }
-    }
-
-    public void printTurn21(MouseEvent event) {
-        if (winner == null) {
-            printTurn(id21, 2, 1);
-        } else {
-            showWindow(winner);
-        }
-    }
-
-    public void printTurn22(MouseEvent event) {
-        if (winner == null) {
-            printTurn(id22, 2, 2);
-        } else {
-            showWindow(winner);
-        }
-    }
-
     /*
      * Prints the character in the respective grids and checks if the game ends.
      * Game mode = Single : The computer makes its move.
      */
-    private void printTurn(TextField textId, int col, int row) {
+    public void printTurn(MouseEvent event) {
 
-        if (textId.getText().isEmpty()) {
-            if (playerX.equals(whoseTurn)) {
-                textId.setText("X");
-                whoseTurn = playerO;
-            } else {
-                textId.setText("O");
-                whoseTurn = playerX;
+        if(winner != null) {
+            showWindow(winner);
+        } else {
+            Label textId = (Label) event.getSource();
+            if(single && textId.getText().isEmpty())
+                disableLabel();
+
+            if (textId.getText().isEmpty()) {
+                if (playerX.equals(whoseTurn)) {
+                    textId.setText("X");
+                    whoseTurn = playerO;
+                } else {
+                    textId.setText("O");
+                    whoseTurn = playerX;
+                }
             }
-        }
-        computeWinLose();
-        label.setText(whoseTurn + "'s turn to play");
-
-        if (single && whoseTurn.equals(playerO)) {
-            printO();
-            whoseTurn = playerX;
             computeWinLose();
             label.setText(whoseTurn + "'s turn to play");
+
+            if (single && whoseTurn.equals(playerO)) {
+                printO();
+                computeWinLose();
+            }
         }
     }
 
@@ -177,13 +112,13 @@ public class TicTacToeController implements Initializable {
             if (!flag && (id00.getText().isEmpty() ^ id01.getText().isEmpty() ^ id02.getText().isEmpty())
                     && !(id00.getText().isEmpty() && id01.getText().isEmpty() && id02.getText().isEmpty())) {
                 if (id00.getText().isEmpty() && id01.getText().equals(id02.getText()) && players[player].equals(id01.getText())) {
-                    id00.setText("O");
+                    pauseAndPlay(id00);
                     flag = true;
                 } else if (id01.getText().isEmpty() && id00.getText().equals(id02.getText()) && players[player].equals(id00.getText())) {
-                    id01.setText("O");
+                    pauseAndPlay(id01);
                     flag = true;
                 } else if (id02.getText().isEmpty() && id00.getText().equals(id01.getText()) && players[player].equals(id00.getText())) {
-                    id02.setText("O");
+                    pauseAndPlay(id02);
                     flag = true;
                 }
 
@@ -192,13 +127,13 @@ public class TicTacToeController implements Initializable {
             if (!flag && (id00.getText().isEmpty() ^ id10.getText().isEmpty() ^ id20.getText().isEmpty())
                     && !(id00.getText().isEmpty() && id10.getText().isEmpty() && id20.getText().isEmpty())) {
                 if (id00.getText().isEmpty() && id10.getText().equals(id20.getText()) && players[player].equals(id10.getText())) {
-                    id00.setText("O");
+                    pauseAndPlay(id00);
                     flag = true;
                 } else if (id10.getText().isEmpty() && id00.getText().equals(id20.getText()) && players[player].equals(id00.getText())) {
-                    id10.setText("O");
+                    pauseAndPlay(id10);
                     flag = true;
                 } else if (id20.getText().isEmpty() && id00.getText().equals(id10.getText()) && players[player].equals(id00.getText())) {
-                    id20.setText("O");
+                    pauseAndPlay(id20);
                     flag = true;
                 }
 
@@ -207,13 +142,13 @@ public class TicTacToeController implements Initializable {
             if (!flag && (id00.getText().isEmpty() ^ id11.getText().isEmpty() ^ id22.getText().isEmpty())
                     && !(id00.getText().isEmpty() && id11.getText().isEmpty() && id22.getText().isEmpty())) {
                 if (id00.getText().isEmpty() && id11.getText().equals(id22.getText()) && players[player].equals(id11.getText())) {
-                    id00.setText("O");
+                    pauseAndPlay(id00);
                     flag = true;
                 } else if (id11.getText().isEmpty() && id00.getText().equals(id22.getText()) && players[player].equals(id00.getText())) {
-                    id11.setText("O");
+                    pauseAndPlay(id11);
                     flag = true;
                 } else if (id22.getText().isEmpty() && id00.getText().equals(id11.getText()) && players[player].equals(id00.getText())) {
-                    id22.setText("O");
+                    pauseAndPlay(id22);
                     flag = true;
                 }
             }
@@ -221,13 +156,13 @@ public class TicTacToeController implements Initializable {
             if (!flag && (id11.getText().isEmpty() ^ id10.getText().isEmpty() ^ id12.getText().isEmpty())
                     && !(id11.getText().isEmpty() && id10.getText().isEmpty() && id12.getText().isEmpty())) {
                 if (id10.getText().isEmpty() && id11.getText().equals(id12.getText()) && players[player].equals(id11.getText())) {
-                    id10.setText("O");
+                    pauseAndPlay(id10);
                     flag = true;
                 } else if (id11.getText().isEmpty() && id10.getText().equals(id12.getText()) && players[player].equals(id12.getText())) {
-                    id11.setText("O");
+                    pauseAndPlay(id11);
                     flag = true;
                 } else if (id12.getText().isEmpty() && id10.getText().equals(id11.getText()) && players[player].equals(id11.getText())) {
-                    id12.setText("O");
+                    pauseAndPlay(id12);
                     flag = true;
                 }
             }
@@ -235,13 +170,13 @@ public class TicTacToeController implements Initializable {
             if (!flag && (id11.getText().isEmpty() ^ id01.getText().isEmpty() ^ id21.getText().isEmpty())
                     && !(id11.getText().isEmpty() && id01.getText().isEmpty() && id21.getText().isEmpty())) {
                 if (id01.getText().isEmpty() && id11.getText().equals(id21.getText()) && players[player].equals(id11.getText())) {
-                    id01.setText("O");
+                    pauseAndPlay(id01);
                     flag = true;
                 } else if (id11.getText().isEmpty() && id01.getText().equals(id21.getText()) && players[player].equals(id21.getText())) {
-                    id11.setText("O");
+                    pauseAndPlay(id11);
                     flag = true;
                 } else if (id21.getText().isEmpty() && id01.getText().equals(id11.getText()) && players[player].equals(id11.getText())) {
-                    id21.setText("O");
+                    pauseAndPlay(id21);
                     flag = true;
                 }
             }
@@ -249,13 +184,13 @@ public class TicTacToeController implements Initializable {
             if (!flag && (id11.getText().isEmpty() ^ id02.getText().isEmpty() ^ id20.getText().isEmpty())
                     && !(id11.getText().isEmpty() && id02.getText().isEmpty() && id20.getText().isEmpty())) {
                 if (id02.getText().isEmpty() && id11.getText().equals(id20.getText()) && players[player].equals(id11.getText())) {
-                    id02.setText("O");
+                    pauseAndPlay(id02);
                     flag = true;
                 } else if (id11.getText().isEmpty() && id02.getText().equals(id20.getText()) && players[player].equals(id02.getText())) {
-                    id11.setText("O");
+                    pauseAndPlay(id11);
                     flag = true;
                 } else if (id20.getText().isEmpty() && id02.getText().equals(id11.getText()) && players[player].equals(id11.getText())) {
-                    id20.setText("O");
+                    pauseAndPlay(id20);
                     flag = true;
                 }
             }
@@ -263,13 +198,13 @@ public class TicTacToeController implements Initializable {
             if (!flag && (id22.getText().isEmpty() ^ id02.getText().isEmpty() ^ id12.getText().isEmpty())
                     && !(id22.getText().isEmpty() && id02.getText().isEmpty() && id12.getText().isEmpty())) {
                 if (id02.getText().isEmpty() && id22.getText().equals(id12.getText()) && players[player].equals(id22.getText())) {
-                    id02.setText("O");
+                    pauseAndPlay(id02);
                     flag = true;
                 } else if (id22.getText().isEmpty() && id02.getText().equals(id12.getText()) && players[player].equals(id02.getText())) {
-                    id22.setText("O");
+                    pauseAndPlay(id22);
                     flag = true;
                 } else if (id12.getText().isEmpty() && id02.getText().equals(id22.getText()) && players[player].equals(id22.getText())) {
-                    id12.setText("O");
+                    pauseAndPlay(id12);
                     flag = true;
                 }
             }
@@ -277,13 +212,13 @@ public class TicTacToeController implements Initializable {
             if (!flag && (id22.getText().isEmpty() ^ id20.getText().isEmpty() ^ id21.getText().isEmpty())
                     && !(id22.getText().isEmpty() && id20.getText().isEmpty() && id21.getText().isEmpty())) {
                 if (id20.getText().isEmpty() && id22.getText().equals(id21.getText()) && players[player].equals(id22.getText())) {
-                    id20.setText("O");
+                    pauseAndPlay(id20);
                     flag = true;
                 } else if (id22.getText().isEmpty() && id20.getText().equals(id21.getText()) && players[player].equals(id20.getText())) {
-                    id22.setText("O");
+                    pauseAndPlay(id22);
                     flag = true;
                 } else if (id21.getText().isEmpty() && id20.getText().equals(id22.getText()) && players[player].equals(id22.getText())) {
-                    id21.setText("O");
+                    pauseAndPlay(id21);
                     flag = true;
                 }
             }
@@ -291,25 +226,67 @@ public class TicTacToeController implements Initializable {
 
         if (!flag) {
             if (id22.getText().isEmpty()) {
-                id22.setText("O");
+                pauseAndPlay(id22);
             } else if (id12.getText().isEmpty()) {
-                id12.setText("O");
+                pauseAndPlay(id12);
             } else if (id11.getText().isEmpty()) {
-                id11.setText("O");
+                pauseAndPlay(id11);
             } else if (id10.getText().isEmpty()) {
-                id10.setText("O");
+                pauseAndPlay(id10);
             } else if (id01.getText().isEmpty()) {
-                id01.setText("O");
+                pauseAndPlay(id01);
             } else if (id21.getText().isEmpty()) {
-                id21.setText("O");
+                pauseAndPlay(id21);
             } else if (id00.getText().isEmpty()) {
-                id00.setText("O");
+                pauseAndPlay(id00);
             } else if (id02.getText().isEmpty()) {
-                id02.setText("O");
+                pauseAndPlay(id02);
             } else if (id20.getText().isEmpty()) {
-                id20.setText("O");
+                pauseAndPlay(id20);
             }
         }
+    }
+
+    /*
+     * Disable clicks while processing previous clicks
+     */
+    private void disableLabel() {
+        Label[] labelArray = {id00, id01, id02, id10, id11, id12, id20, id21, id22};
+        for(Label lbl : labelArray) {
+            lbl.setOnMouseClicked(null);
+        }
+    }
+
+    /*
+     * Enable clicks on the grid
+     */
+    private void enableLabels() {
+        Label[] labelArray = {id00, id01, id02, id10, id11, id12, id20, id21, id22};
+        for(Label lbl : labelArray) {
+            lbl.setOnMouseClicked((event) -> printTurn(event));
+        }
+    }
+
+    /*
+     * Introduce pause transition before the computer plays its turn
+     */
+    private void pauseAndPlay(Label textId) {
+        textId.setVisible(false);
+        textId.setText("O");
+        PauseTransition pause = new PauseTransition(Duration.seconds(1));
+        pause.setOnFinished(event -> enableAll(textId));
+        pause.play();
+
+    }
+
+    /*
+     * On finishing the pause transition, enable the labels and make the turn visible
+     */
+    private void enableAll(Label id){
+        id.setVisible(true);
+        enableLabels();
+        whoseTurn = playerX;
+        label.setText(whoseTurn + "'s turn to play");
     }
 
     /*
